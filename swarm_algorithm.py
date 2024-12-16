@@ -62,11 +62,11 @@ class Swarm_algorithm:
                     if curr_value < self.g_best_value:
                         self.g_best_value = curr_value
                         self.g_best_position = self.particles[i].copy()
-            print("Координаты частиц шага ", k, ":\n", self.p_best_positions,
+            print("Координаты частиц шага ", k + 1, ":\n", self.p_best_positions,
                   "\nЛучшее глобальное значение: ", self.g_best_value,sep='')
 
 
 
-init = Swarm_algorithm(5, 100, 0.7, 2, 2)
+init = Swarm_algorithm(5, 100, 0.7, 1, 1)
 init.swarm_algorithm()
 print("Координаты частиц:\n", init.p_best_positions, "\nЛучшее глобальное значение: ", init.g_best_value, sep='')
