@@ -4,11 +4,10 @@ import random
 
 
 class Simulated_annealing:
-    def __init__(self, a = 0.9, epochs = 1000, start_t = 100, step_size = 0.1):
+    def __init__(self, a = 0.9, epochs = 1000, start_t = 100):
         self.epochs = epochs
         self.t = start_t
         self.start_t = start_t
-        self.step_size = step_size
         self.x = None
         self.y = None
         self.energy = None
@@ -46,8 +45,7 @@ class Simulated_annealing:
                 self.y = new_y
                 self.energy = new_energy
             self.t *= self.a
-        return self.x, self.y, self.energy
-
+            print("текущее решение шага ", i + 1, ": x=", inst.x, "; y=", inst.y, "; f=", inst.energy, sep='')
     def path_calculation(self, graph):
         result = 0
         for i in range(0, len(graph) - 1):
@@ -60,7 +58,7 @@ class Simulated_annealing:
     def graph_simulated_annealing(self):
         self.energy = self.path_calculation(self.graph)
         gen = itertools.permutations(self.graph)
-        for _ in range(self.epochs):
+        for i in range(self.epochs):
             new_graph = next(gen)
             new_graph += (new_graph[0],)
             new_energy = self.path_calculation(new_graph)
@@ -75,9 +73,12 @@ class Simulated_annealing:
                 self.graph = new_graph
                 self.energy = new_energy
             self.t *= self.a
-        return self.graph, self.energy
+            print("выбранный граф шага ", i + 1, ": ", inst.graph, "\nдлина пути: ", inst.energy, sep='')
+
 inst = Simulated_annealing()
-print(inst.f_simulated_annealing())
+inst.f_simulated_annealing()
+print("найденное решение: ", "x=", inst.x, "; y=", inst.y, "; f=", inst.energy, sep='')
 inst = Simulated_annealing(0.95, 50)
-print(inst.graph_simulated_annealing())
+inst.graph_simulated_annealing()
+print("выбранный граф: ", inst.graph, "\nдлина пути: ", inst.energy, sep='')
 
