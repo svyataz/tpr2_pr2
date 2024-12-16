@@ -45,7 +45,7 @@ class Simulated_annealing:
                 self.y = new_y
                 self.energy = new_energy
             self.t *= self.a
-            print("текущее решение шага ", i + 1, ": x=", inst.x, "; y=", inst.y, "; f=", inst.energy, sep='')
+            print("текущее решение шага ", i + 1, ": x=", self.x, "; y=", self.y, "; f=", self.energy, sep='')
     def path_calculation(self, graph):
         result = 0
         for i in range(0, len(graph) - 1):
@@ -73,12 +73,12 @@ class Simulated_annealing:
                 self.graph = new_graph
                 self.energy = new_energy
             self.t *= self.a
-            print("выбранный граф шага ", i + 1, ": ", inst.graph, "\nдлина пути: ", inst.energy, sep='')
+            print("выбранный граф шага ", i + 1, ": ", self.graph, "\nдлина пути: ", self.energy, sep='')
 
 inst = Simulated_annealing()
 inst.f_simulated_annealing()
 print("найденное решение: ", "x=", inst.x, "; y=", inst.y, "; f=", inst.energy, sep='')
-inst = Simulated_annealing(0.95, 50)
+inst = Simulated_annealing(0.5)
 inst.graph_simulated_annealing()
 print("выбранный граф: ", inst.graph, "\nдлина пути: ", inst.energy, sep='')
 

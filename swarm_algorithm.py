@@ -10,7 +10,7 @@ class Swarm_algorithm:
         self.w = w
         self.c1 = c1
         self.c2 = c2
-        self.particles = None
+        self.particles = np.zeros((M,2))
         self.p_best_positions = None
         self.p_best_values = None
         self.g_best_index = None
@@ -24,17 +24,19 @@ class Swarm_algorithm:
 
     def update(self):
             for i in range(self.M):
-                r1 = random.rand()
-                r2 = random.rand()
+                r1 = np.random.rand()
+                r2 = np.random.rand()
                 self.velocity[i][0] = (self.w * self.velocity[i][0]
-                                    + self.c1 * r1 * (self.p_best_positions[i][0] - self.particle[i][0])
-                                    + set.c2 * r2 * (self.g_best_position[i][0] - self.particle[i][0]))
+                                    + self.c1 * r1 * (self.p_best_positions[i][0] - self.particles[i][0])
+                                    + self.c2 * r2 * (self.g_best_position[0] - self.particles[i][0]))
                 self.velocity[i][0] = (self.w * self.velocity[i][1]
-                                       + self.c1 * r1 * (self.p_best_positions[i][1] - self.particle[i][1])
-                                       + set.c2 * r2 * (self.g_best_position[i][1] - self.particle[i][1]))
+                                       + self.c1 * r1 * (self.p_best_positions[i][1] - self.particles[i][1])
+                                       + self.c2 * r2 * (self.g_best_position[1] - self.particles[i][1]))
 
                 self.particles[i][0] += self.velocity[i][0]
+                self.particles[i][0] = np.clip(self.particles[i][0], -1.5, 4)
                 self.particles[i][1] += self.velocity[i][1]
+                self.particles[i][1] = np.clip(self.particles[i][1], -3, 4)
 
     def swarm_algorithm(self):
         # подготовка данных
@@ -50,19 +52,21 @@ class Swarm_algorithm:
         self.g_best_position = self.p_best_positions[self.g_best_index].copy()
         self.g_best_value = self.p_best_values[self.g_best_index]
         # основной алгоритм
-        for i in range(self.L):
+        for k in range(self.L):
             self.update()
             for i in range(self.M):
                 curr_value = self.optimization_function(*self.particles[i])
                 if curr_value < self.p_best_values[i]:
                     self.p_best_values[i] = curr_value
-                    self.p_best_positions = self.particles[i].copy()
+                    self.p_best_positions[i] = self.particles[i].copy()
                     if curr_value < self.g_best_value:
                         self.g_best_value = curr_value
                         self.g_best_position = self.particles[i].copy()
+            print("Координаты частиц шага ", k, ":\n", self.p_best_positions,
+                  "\nЛучшее глобальное значение: ", self.g_best_value,sep='')
 
 
 
 init = Swarm_algorithm(5, 100, 0.7, 2, 2)
-
-print(init.particles, )
+init.swarm_algorithm()
+print("Координаты частиц:\n", init.p_best_positions, "\nЛучшее глобальное значение: ", init.g_best_value, sep='')
