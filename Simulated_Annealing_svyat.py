@@ -2,6 +2,8 @@ import itertools
 import math
 import random
 
+import numpy as np
+
 
 class Simulated_annealing:
     def __init__(self, a = 0.9, epochs = 1000, start_t = 100):
@@ -44,7 +46,7 @@ class Simulated_annealing:
                 self.x = new_x
                 self.y = new_y
                 self.energy = new_energy
-            self.t *= self.a
+            self.t = self.start_t / ((i + 1) ** 2)
             print("текущее решение шага ", i + 1, ": x=", self.x, "; y=", self.y, "; f=", self.energy, sep='')
     def path_calculation(self, graph):
         result = 0
@@ -54,13 +56,16 @@ class Simulated_annealing:
                                 (self.graph_coord[graph[i]][1] -
                                       self.graph_coord[graph[i + 1]][1]) ** 2)
         return round(result, 4)
+    def swap_graph(self, graph):
+        index= np.random.choice(range(len(graph)),size=2)
+        new_graph = list(graph)
+        new_graph[index[0]], new_graph[index[1]] = new_graph[index[1]], new_graph[index[0]]
+        return new_graph
 
     def graph_simulated_annealing(self):
         self.energy = self.path_calculation(self.graph)
-        gen = itertools.permutations(self.graph)
         for i in range(self.epochs):
-            new_graph = next(gen)
-            new_graph += (new_graph[0],)
+            new_graph = self.swap_graph(self.graph)
             new_energy = self.path_calculation(new_graph)
             delta = new_energy - self.energy
             if delta > 0:
@@ -73,12 +78,11 @@ class Simulated_annealing:
                 self.graph = new_graph
                 self.energy = new_energy
             self.t *= self.a
-            print("выбранный граф шага ", i + 1, ": ", self.graph, "\nдлина пути: ", self.energy, sep='')
+            print("выбранный граф шага ", i + 1, ": ", self.graph, "\nдлина пути: ", self.energy,sep='')
 
 inst = Simulated_annealing()
 inst.f_simulated_annealing()
 print("найденное решение: ", "x=", inst.x, "; y=", inst.y, "; f=", inst.energy, sep='')
-inst = Simulated_annealing(0.5)
+inst = Simulated_annealing(0.9, 1000)
 inst.graph_simulated_annealing()
 print("выбранный граф: ", inst.graph, "\nдлина пути: ", inst.energy, sep='')
-
